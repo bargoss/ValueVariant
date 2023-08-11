@@ -25,8 +25,9 @@ using System.Diagnostics.CodeAnalysis;
 #nullable enable
 #endif
 
+
 namespace <#= Namespace #>
-{
+{    
     using V2 = global::ValueVariant;
 
     using T = global::<#= FullName #>;
@@ -84,6 +85,35 @@ namespace <#= Namespace #>
 <# for (var i = 1; i <= Count; ++i ) { #>
         public static explicit operator T<#= i #>(in T value) => value.Item<#= i #>;
 <# } #>
+
+/*
+new code bargos
+*/
+        // implement the switch statement like above, don't use the visitor pattern, just do it with actions
+        public void Switch(<#= Join(1, Count, e => $"Action<T{e}> action{e} ") #>)
+        {
+            switch (this.Index)
+            {
+<# for (var i = 1; i <= Count; ++i ) { #>
+                case TypeIndex.Type<#= i #>: action<#= i #>(this.Value.Item<#= i #>); break;
+<# } #>
+            }
+        } 
+
+/*
+new code bargos
+*/
+        public FR Match<FR>(<#= Join(1, Count, e => $"Func<T{e}, FR> func{e} ") #>)
+        {
+            switch (this.Index)
+            {
+<# for (var i = 1; i <= Count; ++i ) { #>
+                case TypeIndex.Type<#= i #>: return func<#= i #>(this.Value.Item<#= i #>);
+<# } #>
+                default: return default;
+            }
+        }
+        
 
         public bool Equals(T other)
             => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.Equals(this, other);
