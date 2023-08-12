@@ -45,12 +45,32 @@ namespace <#= Namespace #>
         [StructLayout(LayoutKind.Explicit)]
         private readonly struct Union
         {
+/*
 <# for (var i = 1; i <= Count; ++i ) { #>
             [FieldOffset(0)] internal readonly T<#= i #> Item<#= i #>;
 <# } #>
+*/
+
+/*use the real types to define fields instead: 
+like in here:
+<# for (var i = 1; i <= Count; ++i) { #>
+    using T<#= i #> = global::<#= Types[i - 1] #>;
+<# } #>
+*/
+<# for (var i = 1; i <= Count; ++i ) { #>
+            [FieldOffset(0)] internal readonly global::<#= Types[i - 1] #> Item<#= i #>;
+<# } #>
+
+
+
+
+
 
 <# for (var i = 1; i <= Count; ++i ) { #>
+/*
             internal Union(T<#= i #> value) : this() => this.Item<#= i #> = value;
+*/
+            internal Union(global::<#= Types[i - 1] #> value) : this() => this.Item<#= i #> = value;
 <# } #>
         }
 
@@ -66,11 +86,13 @@ namespace <#= Namespace #>
             => (this.Value, this.Index) = (value, index);
 
 <# for (var i = 1; i <= Count; ++i ) { #>
-        public <#= TypeName #>(T<#= i #> value) : this(new Union(value), TypeIndex.Type<#= i #>) { }
+        //public <#= TypeName #>(T<#= i #> value) : this(new Union(value), TypeIndex.Type<#= i #>) { }
+        public <#= TypeName #>(global::<#= Types[i - 1] #> value) : this(new Union(value), TypeIndex.Type<#= i #>) { }
 <# } #>
 
 <# for (var i = 1; i <= Count; ++i ) { #>
-        public T<#= i #> Item<#= i #> { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => this.Index == TypeIndex.Type<#= i #> ? this.Value.Item<#= i #> : ThrowInvalidCastException<T<#= i #>>(); }
+        //public T<#= i #> Item<#= i #> { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => this.Index == TypeIndex.Type<#= i #> ? this.Value.Item<#= i #> : ThrowInvalidCastException<T<#= i #>>(); }
+        public global::<#= Types[i - 1] #> Item<#= i #> { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => this.Index == TypeIndex.Type<#= i #> ? this.Value.Item<#= i #> : ThrowInvalidCastException<global::<#= Types[i - 1] #>>(); }
 <# } #>
 
 #if NETSTANDARD2_1_OR_GREATER
@@ -79,22 +101,26 @@ namespace <#= Namespace #>
         private static TV ThrowInvalidCastException<TV>() => throw new InvalidCastException();
 
 <# for (var i = 1; i <= Count; ++i ) { #>
-        public static implicit operator T(T<#= i #> value) => new T(value);
+        //public static implicit operator T(T<#= i #> value) => new T(value);
+        public static implicit operator T(global::<#= Types[i - 1] #> value) => new T(value);
 <# } #>
 
 <# for (var i = 1; i <= Count; ++i ) { #>
-        public static explicit operator T<#= i #>(in T value) => value.Item<#= i #>;
+        //public static explicit operator T<#= i #>(in T value) => value.Item<#= i #>;
+        public static explicit operator global::<#= Types[i - 1] #>(in T value) => value.Item<#= i #>;
 <# } #>
 
 /*
 new code bargos
 */
         // implement the switch statement like above, don't use the visitor pattern, just do it with actions
-        public void Switch(<#= Join(1, Count, e => $"Action<T{e}> action{e} ") #>)
+        //public void Switch(<#= Join(1, Count, e => $"Action<T{e}> action{e} ") #>)
+        public void Switch(<#= Join(1, Count, e => $"Action<global::{Types[e - 1]}> action{e} ") #>)
         {
             switch (this.Index)
             {
 <# for (var i = 1; i <= Count; ++i ) { #>
+                //case TypeIndex.Type<#= i #>: action<#= i #>(this.Value.Item<#= i #>); break;
                 case TypeIndex.Type<#= i #>: action<#= i #>(this.Value.Item<#= i #>); break;
 <# } #>
             }
@@ -103,11 +129,13 @@ new code bargos
 /*
 new code bargos
 */
-        public FR Match<FR>(<#= Join(1, Count, e => $"Func<T{e}, FR> func{e} ") #>)
+        //public FR Match<FR>(<#= Join(1, Count, e => $"Func<T{e}, FR> func{e} ") #>)
+        public FR Match<FR>(<#= Join(1, Count, e => $"Func<global::{Types[e - 1]}, FR> func{e} ") #>)
         {
             switch (this.Index)
             {
 <# for (var i = 1; i <= Count; ++i ) { #>
+                //case TypeIndex.Type<#= i #>: return func<#= i #>(this.Value.Item<#= i #>);
                 case TypeIndex.Type<#= i #>: return func<#= i #>(this.Value.Item<#= i #>);
 <# } #>
                 default: return default;
