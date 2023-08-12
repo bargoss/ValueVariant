@@ -10,11 +10,7 @@
     <option name="rewriteBookmarkType" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64ee3c84-bebd-4744-9131-95f09aaa9c8f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ValueVariant/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ValueVariant/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ValueVariant.Generator/ValueVariantTemplate.tt" beforeDir="false" afterPath="$PROJECT_DIR$/ValueVariant.Generator/ValueVariantTemplate.tt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ValueVariant.Test/SwitchMatchTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ValueVariant.Test/SwitchMatchTests.cs" afterDir="false" />
-    </list>
+    <list default="true" id="64ee3c84-bebd-4744-9131-95f09aaa9c8f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,7 +75,7 @@
       <option name="presentableId" value="Default" />
       <updated>1691732944556</updated>
       <workItem from="1691732946785" duration="6901000" />
-      <workItem from="1691836179660" duration="1046000" />
+      <workItem from="1691836179660" duration="1912000" />
     </task>
     <servers />
   </component>
