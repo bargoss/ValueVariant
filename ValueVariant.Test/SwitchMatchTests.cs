@@ -22,7 +22,7 @@ namespace ValueVariant.Test
     }
 
     [ValueVariant]
-    public readonly partial struct TestVariantBargos : IValueVariant<TestVariantBargos, int, long, bool>
+    public partial struct TestVariantBargos : IValueVariant<TestVariantBargos, int, long, bool>
     {
         
     }

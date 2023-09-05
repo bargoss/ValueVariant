@@ -5,7 +5,7 @@ using Variant.Test;
 namespace ValueVariant.Test;
 
 [ValueVariant(ValueVariantGenerateOptions.MessagePackFormatter)]
-public readonly partial struct TestVariant : IValueVariant<TestVariant, int, TestStruct<Guid>, DateTime>
+public partial struct TestVariant : IValueVariant<TestVariant, int, TestStruct<Guid>, DateTime>
 {
     public static explicit operator TestVariant(TestVariant2 value)
         => value.Accept(TestVariant2Converter.Instance);
@@ -31,7 +31,7 @@ public readonly struct TestVariantVisitor : TestVariant.IFuncVisitor<Type>, Test
 }
 
 [ValueVariant]
-public readonly partial struct TestVariant2 : IValueVariant<TestVariant2, TestStruct<Guid>, DateTime, int, long, bool>
+public partial struct TestVariant2 : IValueVariant<TestVariant2, TestStruct<Guid>, DateTime, int, long, bool>
 {
     // implicit because TestVariant ⊂ TestVariant2
     public static implicit operator TestVariant2(TestVariant value)
