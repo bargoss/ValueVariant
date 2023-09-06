@@ -46,11 +46,12 @@ namespace <#= Namespace #>
         public struct Union
         {
 <# for (var i = 1; i <= Count; ++i ) { #>
-            [FieldOffset(0)] internal readonly T<#= i #> Item<#= i #>;
+            [FieldOffset(0)] private T<#= i #> m_Item<#= i #>;
+            public T<#= i #> Item<#= i #> { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => this.m_Item<#= i #>; [MethodImpl(MethodImplOptions.AggressiveInlining)] set => this.m_Item<#= i #> = value; }
 <# } #>
 
 <# for (var i = 1; i <= Count; ++i ) { #>
-            internal Union(T<#= i #> value) : this() => this.Item<#= i #> = value;
+            public Union(T<#= i #> value) : this() => this.Item<#= i #> = value;
 <# } #>
 
 <# for (var i = 0; i < SizeAsBytes; i++ ) { #>
