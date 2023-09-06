@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -56,7 +57,9 @@ public sealed class ValueVariantGenerator : ISourceGenerator
 
             var variantType = variantSymbol.ToString();
 
+            var maxSize = 0;
             var types = itf.TypeArguments.Skip(1).Select(e => {
+                maxSize = Math.Max(maxSize, SizeHelper.SizeOf(e.GetType()));
                 if (e.SpecialType != SpecialType.None) {
                     return e.SpecialType.ToString().Replace('_', '.');
                 }
@@ -71,9 +74,39 @@ public sealed class ValueVariantGenerator : ISourceGenerator
                 return name;
             }).ToArray();
 
-            var template = new ValueVariantTemplate(options, variantType, types);
+
+            var sizeInBytes = maxSize;
+
+            var template = new ValueVariantTemplate(options, variantType, types, sizeInBytes);
             context.AddSource($"{variantType}.cs", template.TransformText());
         }
+    }
+}
+
+static class SizeHelper
+{
+    private static Dictionary<Type, int> sizes = new Dictionary<Type, int>();
+
+    public static int SizeOf(Type type)
+    {
+        int size;
+        if (sizes.TryGetValue(type, out size))
+        {
+            return size;
+        }
+
+        size = SizeOfType(type);
+        sizes.Add(type, size);
+        return size;            
+    }
+
+    private static int SizeOfType(Type type)
+    {
+        var dm = new DynamicMethod("SizeOfType", typeof(int), new Type[] { });
+        ILGenerator il = dm.GetILGenerator();
+        il.Emit(OpCodes.Sizeof, type);
+        il.Emit(OpCodes.Ret);
+        return (int)dm.Invoke(null, null);
     }
 }
 

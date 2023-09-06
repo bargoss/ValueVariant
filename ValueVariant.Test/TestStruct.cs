@@ -4,7 +4,7 @@ using MessagePack;
 namespace Variant.Test;
 
 [MessagePackObject]
-public readonly struct TestStruct<T>
+public struct TestStruct<T>
     where T : unmanaged
 {
     [Key(0)]

@@ -17,12 +17,15 @@ public partial class ValueVariantTemplate
 
     public int Count => Types.Length;
 
-    public ValueVariantTemplate(ValueVariantGenerateOptions options, string variantType, string[] types)
+    public int SizeAsBytes { get; set; }
+
+    public ValueVariantTemplate(ValueVariantGenerateOptions options, string variantType, string[] types, int sizeAsBytes)
     {
         this.Options = options;
         var t = variantType.Split('.');
         this.TypeName = t.Last();
         this.Namespace = string.Join(".", t.Take(t.Length - 1));
         this.Types = types;
+        this.SizeAsBytes = sizeAsBytes;
     }
 }

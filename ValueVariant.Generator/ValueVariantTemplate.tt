@@ -39,11 +39,11 @@ namespace <#= Namespace #>
 <# if (Options.HasFlag(ValueVariantGenerateOptions.MessagePackFormatter)) { #>
     [MessagePackFormatter(typeof(<#= TypeName #>.MessagePackFormatter))]
 <# } #>
-    readonly partial struct <#= TypeName #> : IEquatable<T>,
+    public partial struct <#= TypeName #> : IEquatable<T>,
         <#= Join(1, Count, e => $"V2.Details.IValueVariantElement<T{e}>") #>
     {
         [StructLayout(LayoutKind.Explicit)]
-        private readonly struct Union
+        public struct Union
         {
 <# for (var i = 1; i <= Count; ++i ) { #>
             [FieldOffset(0)] internal readonly T<#= i #> Item<#= i #>;
@@ -52,13 +52,19 @@ namespace <#= Namespace #>
 <# for (var i = 1; i <= Count; ++i ) { #>
             internal Union(T<#= i #> value) : this() => this.Item<#= i #> = value;
 <# } #>
+
+<# for (var i = 0; i < SizeAsBytes; i++ ) { #>
+            [FieldOffset(<#=i#>)] public byte Byte<#=i#>;
+<# } #>
         }
 
         public enum TypeIndex : byte { None, <#= Join(1, Count, e => $"Type{e}") #> }
 
-        private readonly Union Value;
+        public Union Value;
 
-        public readonly TypeIndex Index;
+        public TypeIndex Index;
+
+
 
         byte V2.Details.IValueVariant.TypeIndex { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => (byte)this.Index; }
 
